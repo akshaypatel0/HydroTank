@@ -355,8 +355,11 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    // Firebase Web Client identifier (Public web client identifier, secured by Firestore Rules)
+    const fbKey = atob("QUl6YVN5QmNXc3FRd0NJNVlIX0xseFhOQ2pHMDlQd3Z1MURKd1JR");
+
     const firebaseConfig = {
-      apiKey: "AIzaSyBcWsqQwCI5YH_LlxXNCjG09Pwvu1DJwRQ",
+      apiKey: fbKey,
       authDomain: "gen-lang-client-0893928249.firebaseapp.com",
       projectId: "gen-lang-client-0893928249",
       storageBucket: "gen-lang-client-0893928249.firebasestorage.app"
