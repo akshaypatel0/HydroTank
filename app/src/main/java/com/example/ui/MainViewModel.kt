@@ -404,13 +404,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     viewModelScope.launch {
       try {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        FirebaseAuth.getInstance().signInWithCredential(credential).await()
-        addLog(LogType.SYSTEM, "Signed in as ${FirebaseAuth.getInstance().currentUser?.email}")
+        val authResult = FirebaseAuth.getInstance().signInWithCredential(credential).await()
+        val email = authResult.user?.email ?: "Google Account"
+        addLog(LogType.SYSTEM, "Signed in as $email")
+        android.widget.Toast.makeText(getApplication(), "Signed in as $email", android.widget.Toast.LENGTH_SHORT).show()
         if (_tankState.value.hasValidReading) {
           cloudGatewayRepository.syncTankTelemetry(_tankState.value)
         }
       } catch (e: Exception) {
         addLog(LogType.ERROR, "Sign-in failed: ${e.message}")
+        android.widget.Toast.makeText(getApplication(), "Sign-in failed: ${e.localizedMessage ?: e.message}", android.widget.Toast.LENGTH_LONG).show()
       }
     }
   }

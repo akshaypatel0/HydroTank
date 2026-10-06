@@ -384,7 +384,7 @@ fun SettingsScreen(
           filterHc05Only = filterHc05Only,
           hapticAlerts = hapticAlerts,
           cloudGatewayEnabled = cloudGatewayEnabled,
-          cloudGatewayUrl = cloudGatewayUrl.ifBlank { "https://nrahir778.github.io/HydroTank/" }
+          cloudGatewayUrl = cloudGatewayUrl.ifBlank { "https://akshaypatel0.github.io/HydroTank/" }
         )
         onSaveSettings(updated)
       },

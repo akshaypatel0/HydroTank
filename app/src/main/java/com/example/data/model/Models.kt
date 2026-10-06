@@ -48,7 +48,7 @@ data class AppSettings(
   val autoReconnect: Boolean = true,
   val hapticAlerts: Boolean = true,
   val cloudGatewayEnabled: Boolean = true,
-  val cloudGatewayUrl: String = "https://nrahir778.github.io/HydroTank/"
+  val cloudGatewayUrl: String = "https://akshaypatel0.github.io/HydroTank/"
 )
 
 data class TankState(

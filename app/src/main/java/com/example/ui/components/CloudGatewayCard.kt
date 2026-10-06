@@ -150,8 +150,10 @@ fun CloudGatewayCard(
         val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
         onSignInWithGoogleToken(googleIdTokenCredential.idToken)
       } catch (e: GetCredentialCancellationException) {
-        // User dismissed account picker
+        android.util.Log.w("GoogleSignIn", "Sign-in was cancelled or certificate mismatch", e)
+        Toast.makeText(activity, "Sign-in was cancelled. Please try again.", Toast.LENGTH_SHORT).show()
       } catch (e: Exception) {
+        android.util.Log.e("GoogleSignIn", "Sign-in error", e)
         Toast.makeText(activity, "Sign-in error: ${e.localizedMessage ?: e.message}", Toast.LENGTH_LONG).show()
       } finally {
         isSigningIn = false
