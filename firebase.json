@@ -1,0 +1,18 @@
+{
+  "firestore": [
+    {
+      "database": "ai-studio-android-hydrotan-dd8954a1-6013-4951-84b8-06fa1db58d23",
+      "rules": "firestore.rules"
+    }
+  ],
+  "emulators": {
+    "firestore": {
+      "port": 8085,
+      "host": "127.0.0.1"
+    },
+    "auth": {
+      "port": 9099,
+      "host": "127.0.0.1"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidTankTelemetry(data) {
+      return data.keys().hasAll(['levelPercent', 'isMotorOn', 'targetLevel', 'gatewayUserId', 'lastUpdated'])
+        && data.keys().hasOnly(['levelPercent', 'distanceCM', 'isMotorOn', 'targetLevel', 'statusMessage', 'gatewayUserId', 'lastUpdated', 'isDeviceConnected'])
+        && data.levelPercent is number
+        && data.levelPercent >= 0.0
+        && data.levelPercent <= 100.0
+        && (!('distanceCM' in data) || data.distanceCM is number)
+        && data.isMotorOn is bool
+        && data.targetLevel is number
+        && (!('statusMessage' in data) || data.statusMessage is string)
+        && (!('isDeviceConnected' in data) || data.isDeviceConnected is bool)
+        && data.gatewayUserId is string
+        && data.gatewayUserId == request.auth.uid
+        && data.lastUpdated is timestamp;
+    }
+
+    match /tanks/{tankId} {
+      // Public read: Anyone with the link can view the tank status in real time
+      allow read: if true;
+      // Controlled write: Only the authenticated gateway user can update data, no external controls
+      allow write: if request.auth != null && isValidTankTelemetry(request.resource.data);
+    }
+  }
+}

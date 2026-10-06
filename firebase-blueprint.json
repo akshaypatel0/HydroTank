@@ -1,0 +1,29 @@
+{
+  "entities": {
+    "TankTelemetry": {
+      "title": "TankTelemetry",
+      "description": "Live water tank level and pump status pushed by the gateway device",
+      "type": "object",
+      "properties": {
+        "levelPercent": { "type": "number", "minimum": 0, "maximum": 100 },
+        "distanceCM": { "type": "number" },
+        "isMotorOn": { "type": "boolean" },
+        "targetLevel": { "type": "number" },
+        "statusMessage": { "type": "string" },
+        "isDeviceConnected": { "type": "boolean" },
+        "gatewayUserId": { "type": "string" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      },
+      "required": ["levelPercent", "isMotorOn", "targetLevel", "gatewayUserId", "lastUpdated"],
+      "additionalProperties": false
+    }
+  },
+  "firestore": {
+    "collections": {
+      "/tanks/{tankId}": {
+        "schema": "TankTelemetry",
+        "description": "Water tank telemetry data. Read-only for web link visitors, writable only by the authenticated gateway phone."
+      }
+    }
+  }
+}
