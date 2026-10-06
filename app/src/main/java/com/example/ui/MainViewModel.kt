@@ -57,7 +57,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
   private val _logs = MutableStateFlow<List<LogEntry>>(
     listOf(
-      LogEntry(type = LogType.SYSTEM, text = "HydroTank Controller initialized"),
+      LogEntry(type = LogType.SYSTEM, text = "HydroSense Controller initialized"),
       LogEntry(type = LogType.SYSTEM, text = "Connect HC-05 to view live water level & control motor")
     )
   )

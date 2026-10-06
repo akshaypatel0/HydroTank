@@ -68,7 +68,7 @@ import com.example.ui.screens.DashboardScreen
 import com.example.ui.screens.DeviceListSheet
 import com.example.ui.screens.SettingsScreen
 import com.example.ui.screens.TerminalScreen
-import com.example.ui.theme.HydroTankTheme
+import com.example.ui.theme.HydroSenseTheme
 import com.example.ui.theme.PumpActiveGreen
 import kotlinx.coroutines.launch
 
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
     setContent {
-      HydroTankTheme {
+      HydroSenseTheme {
         HydroTankApp()
       }
     }
@@ -167,7 +167,7 @@ fun HydroTankApp(viewModel: MainViewModel = viewModel()) {
       CenterAlignedTopAppBar(
         title = {
           Text(
-            text = "HydroTank",
+            text = "HydroSense",
             fontWeight = FontWeight.ExtraBold,
             style = MaterialTheme.typography.titleLarge
           )

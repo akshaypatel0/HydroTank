@@ -51,7 +51,7 @@ private val LightColorScheme =
   )
 
 @Composable
-fun HydroTankTheme(
+fun HydroSenseTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
   dynamicColor: Boolean = false,
   content: @Composable () -> Unit,
@@ -72,3 +72,10 @@ fun HydroTankTheme(
     content = content
   )
 }
+
+@Composable
+fun HydroTankTheme(
+  darkTheme: Boolean = isSystemInDarkTheme(),
+  dynamicColor: Boolean = false,
+  content: @Composable () -> Unit,
+) = HydroSenseTheme(darkTheme, dynamicColor, content)

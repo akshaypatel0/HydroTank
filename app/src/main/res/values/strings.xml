@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">HydroTank</string>
+    <string name="app_name">HydroSense</string>
+    <string name="default_web_client_id" translatable="false">236708762741-dkei5rn0vd95tdkmn5f3edpk4qjs6duu.apps.googleusercontent.com</string>
 </resources>

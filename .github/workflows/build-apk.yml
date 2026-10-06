@@ -43,19 +43,77 @@ jobs:
           fi
           chmod +x gradlew
 
+      - name: Ensure google-services.json exists
+        run: |
+          if [ ! -f app/google-services.json ]; then
+            echo "app/google-services.json not found in workspace, generating config..."
+            cat << 'EOF' > app/google-services.json
+          {
+            "project_info": {
+              "project_number": "236708762741",
+              "project_id": "gen-lang-client-0893928249",
+              "storage_bucket": "gen-lang-client-0893928249.firebasestorage.app"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:236708762741:android:2084264e5336d624f4d43c",
+                  "android_client_info": {
+                    "package_name": "com.aistudio.hydrotank.vomaga"
+                  }
+                },
+                "oauth_client": [
+                  {
+                    "client_id": "236708762741-hl5npig4imd1r67gg8kiksles11ku1qm.apps.googleusercontent.com",
+                    "client_type": 1,
+                    "android_info": {
+                      "package_name": "com.aistudio.hydrotank.vomaga",
+                      "certificate_hash": "577e181e3ef29396d36b305450a9d0d4e82b2f49"
+                    }
+                  },
+                  {
+                    "client_id": "236708762741-dkei5rn0vd95tdkmn5f3edpk4qjs6duu.apps.googleusercontent.com",
+                    "client_type": 3
+                  }
+                ],
+                "api_key": [
+                  {
+                    "current_key": "AIzaSyBcWsqQwCI5YH_LlxXNCjG09Pwvu1DJwRQ"
+                  }
+                ]
+              }
+            ],
+            "configuration_version": "1"
+          }
+          EOF
+          fi
+          ls -lh app/google-services.json
+
+      - name: Ensure firebase_applet_config.xml exists
+        run: |
+          mkdir -p app/src/main/res/values
+          if [ ! -f app/src/main/res/values/firebase_applet_config.xml ]; then
+            cat << 'EOF' > app/src/main/res/values/firebase_applet_config.xml
+          <?xml version="1.0" encoding="utf-8" standalone="no"?>
+          <resources>
+              <string name="firestore_database_id" translatable="false">ai-studio-android-hydrotan-dd8954a1-6013-4951-84b8-06fa1db58d23</string>
+          </resources>
+          EOF
+          fi
+
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --no-daemon
 
       - name: Prepare APK Asset
         run: |
           mkdir -p release-apk
-          cp app/build/outputs/apk/debug/*.apk release-apk/HydroTank.apk
+          cp app/build/outputs/apk/debug/*.apk release-apk/HydroSense.apk
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: hydrotank-debug-apk
-          path: release-apk/HydroTank.apk
+          name: hydrosense-debug-apk
+          path: release-apk/HydroSense.apk
           retention-days: 14
 
       - name: Automatically Release in GitHub as Latest
@@ -63,13 +121,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          name: "HydroTank Latest Release"
+          name: "HydroSense Latest Release"
           body: |
-            ## 💧 HydroTank - Smart Water Tank & Motor Controller
+            ## 💧 HydroSense - Smart Water Tank & Motor Controller
             Automated build from commit `${{ github.sha }}`.
 
             ### 📱 Download
-            - **[HydroTank.apk](https://github.com/${{ github.repository }}/releases/download/latest/HydroTank.apk)**
+            - **[HydroSense.apk](https://github.com/${{ github.repository }}/releases/download/latest/HydroSense.apk)**
 
             ### 🚀 Features Included:
             - 📡 **Bluetooth HC-05 Integration**: Seamless pairing and bidirectional telemetry with Arduino.
@@ -77,7 +135,7 @@ jobs:
             - ⚡ **Motor & Relay Control**: Safe toggles with automated target level and overflow cutoffs.
             - 🌐 **Cloud Gateway (IoT)**: Real-time broadcast to Firestore; public read-only web link.
             - 📊 **Serial Terminal**: Live command input and timestamped debug logs.
-          files: release-apk/HydroTank.apk
+          files: release-apk/HydroSense.apk
           prerelease: false
           make_latest: true
         env:

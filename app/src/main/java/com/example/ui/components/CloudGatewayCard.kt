@@ -103,7 +103,7 @@ fun CloudGatewayCard(
 
   fun copyToClipboard() {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText("HydroTank Public Link", shareUrl)
+    val clip = ClipData.newPlainText("HydroSense Public Link", shareUrl)
     clipboard.setPrimaryClip(clip)
     Toast.makeText(context, "Public link copied to clipboard!", Toast.LENGTH_SHORT).show()
   }
@@ -111,10 +111,10 @@ fun CloudGatewayCard(
   fun shareViaChooser() {
     val sendIntent = Intent().apply {
       action = Intent.ACTION_SEND
-      putExtra(Intent.EXTRA_TITLE, "HydroTank Live Water Monitor")
+      putExtra(Intent.EXTRA_TITLE, "HydroSense Live Water Monitor")
       putExtra(
         Intent.EXTRA_TEXT,
-        "💧 Live Water Tank Monitor: View our real-time water level, motor status, and telemetry here:\n$shareUrl"
+        "💧 HydroSense: View our live water tank level, pump status, and telemetry here:\n$shareUrl"
       )
       type = "text/plain"
     }

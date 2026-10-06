@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "HydroTank"
+rootProject.name = "HydroSense"
 
 include(":app")

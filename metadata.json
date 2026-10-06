@@ -1,6 +1,6 @@
 {
-  "name": "Remix HydroTank",
-  "description": "Smart Water Tank \u0026 Motor Controller via Bluetooth HC-05 with real-time level monitoring, pump control, and automated safeguards.",
+  "name": "HydroSense",
+  "description": "Smart Water Tank & Motor Controller via Bluetooth HC-05 with real-time level monitoring, pump control, and automated safeguards.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
