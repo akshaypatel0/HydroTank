@@ -18,6 +18,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudSync
 import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
@@ -28,6 +31,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
@@ -58,6 +63,7 @@ import com.example.data.model.LineEnding
 fun SettingsScreen(
   settings: AppSettings,
   onSaveSettings: (AppSettings) -> Unit,
+  onTestVoiceAlert: (Int) -> Unit = {},
   modifier: Modifier = Modifier
 ) {
   var motorOnCmd by remember(settings) { mutableStateOf(settings.motorOnCmd) }
@@ -69,6 +75,13 @@ fun SettingsScreen(
   var tankHeight by remember(settings) { mutableStateOf(settings.tankHeightCm.toInt().toString()) }
   var filterHc05Only by remember(settings) { mutableStateOf(settings.filterHc05Only) }
   var hapticAlerts by remember(settings) { mutableStateOf(settings.hapticAlerts) }
+  var voiceAlertsEnabled by remember(settings) { mutableStateOf(settings.voiceAlertsEnabled) }
+  var pushNotificationsEnabled by remember(settings) { mutableStateOf(settings.pushNotificationsEnabled) }
+  var voiceMilestones25 by remember(settings) { mutableStateOf(settings.voiceMilestones25) }
+  var voiceMilestones50 by remember(settings) { mutableStateOf(settings.voiceMilestones50) }
+  var voiceMilestones75 by remember(settings) { mutableStateOf(settings.voiceMilestones75) }
+  var voiceMilestones95 by remember(settings) { mutableStateOf(settings.voiceMilestones95) }
+  var voiceTargetReached by remember(settings) { mutableStateOf(settings.voiceTargetReached) }
   var cloudGatewayEnabled by remember(settings) { mutableStateOf(settings.cloudGatewayEnabled) }
   var cloudGatewayUrl by remember(settings) { mutableStateOf(settings.cloudGatewayUrl) }
   var selectedLineEnding by remember(settings) { mutableStateOf(settings.lineEnding) }
@@ -369,6 +382,171 @@ fun SettingsScreen(
       }
     }
 
+    // Card 6: Gujarati Voice & Notification Alerts
+    Card(
+      shape = RoundedCornerShape(18.dp),
+      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f))
+    ) {
+      Column(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+      ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Icon(Icons.Default.RecordVoiceOver, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+          Spacer(modifier = Modifier.width(8.dp))
+          Column {
+            Text(
+              text = "ગુજરાતી અવાજ & એલર્ટ્સ (Voice & Alerts)",
+              style = MaterialTheme.typography.titleMedium,
+              fontWeight = FontWeight.Bold
+            )
+            Text(
+              text = "Human Gujarati voice & heads-up background alerts",
+              style = MaterialTheme.typography.bodySmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+          }
+        }
+
+        // Master Voice Alerts Toggle
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Column(modifier = Modifier.weight(1f)) {
+            Text(text = "Gujarati Voice Alerts (ગુજરાતી અવાજ)", fontWeight = FontWeight.SemiBold)
+            Text(
+              text = "Speaks milestone status (e.g. પાણીની ટાંકી 50% ભરાઈ ગઈ છે)",
+              style = MaterialTheme.typography.bodySmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+          }
+          Switch(
+            checked = voiceAlertsEnabled,
+            onCheckedChange = { voiceAlertsEnabled = it },
+            modifier = Modifier.testTag("switch_voice_alerts")
+          )
+        }
+
+        // Master Push Notifications Toggle
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Column(modifier = Modifier.weight(1f)) {
+            Text(text = "Push Notifications (નોટિફિકેશન)", fontWeight = FontWeight.SemiBold)
+            Text(
+              text = "Heads-up alert banner on lock screen & background",
+              style = MaterialTheme.typography.bodySmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+          }
+          Switch(
+            checked = pushNotificationsEnabled,
+            onCheckedChange = { pushNotificationsEnabled = it },
+            modifier = Modifier.testTag("switch_push_notifications")
+          )
+        }
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+
+        Text(
+          text = "સક્રિય માઈલસ્ટોન (Active Milestones):",
+          style = MaterialTheme.typography.labelMedium,
+          color = MaterialTheme.colorScheme.primary,
+          fontWeight = FontWeight.Bold
+        )
+
+        // 25% Milestone
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(text = "💧 25% Water Milestone", style = MaterialTheme.typography.bodyMedium)
+          Switch(checked = voiceMilestones25, onCheckedChange = { voiceMilestones25 = it })
+        }
+
+        // 50% Milestone
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(text = "💧 50% Water Milestone", style = MaterialTheme.typography.bodyMedium)
+          Switch(checked = voiceMilestones50, onCheckedChange = { voiceMilestones50 = it })
+        }
+
+        // 75% Milestone
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(text = "💧 75% Water Milestone", style = MaterialTheme.typography.bodyMedium)
+          Switch(checked = voiceMilestones75, onCheckedChange = { voiceMilestones75 = it })
+        }
+
+        // 95% Safety Milestone
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(text = "🚨 95% Critical Overflow Warning", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.error)
+          Switch(checked = voiceMilestones95, onCheckedChange = { voiceMilestones95 = it })
+        }
+
+        // Target Reached Milestone
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(text = "🎯 Target Reached (Motor Cutoff)", style = MaterialTheme.typography.bodyMedium)
+          Switch(checked = voiceTargetReached, onCheckedChange = { voiceTargetReached = it })
+        }
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+
+        // Voice Test Buttons
+        Text(
+          text = "ટેસ્ટ વોઈસ અવાજ (Test Human Audio):",
+          style = MaterialTheme.typography.labelMedium,
+          fontWeight = FontWeight.SemiBold
+        )
+
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+          OutlinedButton(
+            onClick = { onTestVoiceAlert(50) },
+            modifier = Modifier.weight(1f).testTag("test_voice_50_button"),
+            shape = RoundedCornerShape(10.dp)
+          ) {
+            Icon(Icons.Default.PlayArrow, contentDescription = null, modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.width(4.dp))
+            Text("ટેસ્ટ 50%", style = MaterialTheme.typography.bodySmall)
+          }
+
+          OutlinedButton(
+            onClick = { onTestVoiceAlert(95) },
+            modifier = Modifier.weight(1f).testTag("test_voice_95_button"),
+            shape = RoundedCornerShape(10.dp)
+          ) {
+            Icon(Icons.Default.NotificationsActive, contentDescription = null, modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.width(4.dp))
+            Text("ટેસ્ટ 95%", style = MaterialTheme.typography.bodySmall)
+          }
+        }
+      }
+    }
+
     // Save Settings Button
     Button(
       onClick = {
@@ -383,6 +561,13 @@ fun SettingsScreen(
           lineEnding = selectedLineEnding,
           filterHc05Only = filterHc05Only,
           hapticAlerts = hapticAlerts,
+          voiceAlertsEnabled = voiceAlertsEnabled,
+          pushNotificationsEnabled = pushNotificationsEnabled,
+          voiceMilestones25 = voiceMilestones25,
+          voiceMilestones50 = voiceMilestones50,
+          voiceMilestones75 = voiceMilestones75,
+          voiceMilestones95 = voiceMilestones95,
+          voiceTargetReached = voiceTargetReached,
           cloudGatewayEnabled = cloudGatewayEnabled,
           cloudGatewayUrl = cloudGatewayUrl.ifBlank { "https://akshaypatel0.github.io/HydroTank/" }
         )

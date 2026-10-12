@@ -8,6 +8,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.alerts.WaterAlertManager
 import com.example.bluetooth.BluetoothController
 import com.example.data.model.AppSettings
 import com.example.data.model.BluetoothDeviceItem
@@ -35,6 +36,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
   val bluetoothController = BluetoothController(application.applicationContext)
   val cloudGatewayRepository = CloudGatewayRepository(application.applicationContext)
+  val waterAlertManager = WaterAlertManager(application.applicationContext)
 
   val connectionState: StateFlow<ConnectionState> = bluetoothController.connectionState
   val isScanning: StateFlow<Boolean> = bluetoothController.isScanning
@@ -108,6 +110,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
           is ConnectionState.Disconnected -> {
             addLog(LogType.SYSTEM, "Disconnected from Bluetooth device")
             stopMotorTimer()
+            waterAlertManager.resetFiredMilestones()
             // Reset to null so no fake or stale readings are shown without connection
             _tankState.value = TankState(
               targetLevel = _tankState.value.targetLevel,
@@ -289,6 +292,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _tankState.value = _tankState.value.copy(lastAlertReason = "Target Level Reached")
         addLog(LogType.WARNING, "🎯 TARGET REACHED: Motor stopped automatically by Arduino")
         triggerHaptic(300)
+        waterAlertManager.onTargetReachedEvent(_settings.value)
         return
       }
 
@@ -297,6 +301,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _tankState.value = _tankState.value.copy(lastAlertReason = "Safety Limit 95%")
         addLog(LogType.WARNING, "🚨 SAFETY LIMIT 95%: Motor stopped by Arduino to prevent overflow")
         triggerHaptic(400)
+        waterAlertManager.onSafetyLimitEvent(_settings.value)
         return
       }
 
@@ -362,6 +367,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
           lastTelemetryTime = System.currentTimeMillis(),
           statusMessage = if (motorOn) "Motor Running" else "Standby"
         )
+
+        // Evaluate Gujarati voice & notification alerts on live telemetry
+        waterAlertManager.evaluateState(_tankState.value, _settings.value)
 
         // Sync motor timer
         if (motorOn && timerJob == null) {
@@ -477,9 +485,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     } catch (_: Exception) {}
   }
 
+  fun testVoiceAlert(milestone: Int = 50) {
+    waterAlertManager.testVoiceAlert(milestone)
+  }
+
   override fun onCleared() {
     super.onCleared()
     bluetoothController.unregister()
+    waterAlertManager.release()
     timerJob?.cancel()
   }
 }

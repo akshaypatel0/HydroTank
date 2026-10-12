@@ -147,6 +147,12 @@ fun HydroTankApp(viewModel: MainViewModel = viewModel()) {
       }
     }
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+      }
+    }
+
     if (neededPermissions.isNotEmpty()) {
       permissionLauncher.launch(neededPermissions.toTypedArray())
     } else {
@@ -310,7 +316,8 @@ fun HydroTankApp(viewModel: MainViewModel = viewModel()) {
           AppNavTab.SETTINGS.ordinal -> {
             SettingsScreen(
               settings = settings,
-              onSaveSettings = { updated -> viewModel.updateSettings(updated) }
+              onSaveSettings = { updated -> viewModel.updateSettings(updated) },
+              onTestVoiceAlert = { milestone -> viewModel.testVoiceAlert(milestone) }
             )
           }
         }

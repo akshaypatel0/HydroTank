@@ -47,6 +47,13 @@ data class AppSettings(
   val filterHc05Only: Boolean = true,
   val autoReconnect: Boolean = true,
   val hapticAlerts: Boolean = true,
+  val voiceAlertsEnabled: Boolean = true,
+  val pushNotificationsEnabled: Boolean = true,
+  val voiceMilestones25: Boolean = true,
+  val voiceMilestones50: Boolean = true,
+  val voiceMilestones75: Boolean = true,
+  val voiceMilestones95: Boolean = true,
+  val voiceTargetReached: Boolean = true,
   val cloudGatewayEnabled: Boolean = true,
   val cloudGatewayUrl: String = "https://akshaypatel0.github.io/HydroTank/"
 )
